@@ -35,62 +35,42 @@ def get_default_path_dict(custom_location=None):
     }
 
 
-def get_libero_path(query_key):
-    with open(config_file, "r") as f:
-        config = dict(yaml.load(f.read(), Loader=yaml.FullLoader))
+# Cached config dict (loaded once).
+_config_cache = None
 
-    # Give warnings in case the user needs to access the paths
-    for key in config:
-        if not os.path.exists(config[key]):
-            print(f"[Warning]: {key} path {config[key]} does not exist!")
+
+def _load_config():
+    """Load config from file, or fall back to auto-detected defaults."""
+    global _config_cache
+    if _config_cache is not None:
+        return _config_cache
+
+    if os.path.exists(config_file):
+        with open(config_file, "r") as f:
+            _config_cache = dict(yaml.load(f.read(), Loader=yaml.FullLoader))
+    else:
+        # Auto-detect paths relative to this package — no config file needed.
+        _config_cache = get_default_path_dict()
+
+    return _config_cache
+
+
+def get_libero_path(query_key):
+    config = _load_config()
 
     assert (
         query_key in config
-    ), f"Key {query_key} not found in config file {config_file}. You need to modify it. Available keys are: {config.keys()}"
+    ), f"Key {query_key} not found in config. Available keys are: {config.keys()}"
     return config[query_key]
 
 
 def set_libero_default_path(custom_location=os.path.dirname(os.path.abspath(__file__))):
+    global _config_cache
     print(
         f"[Warning] You are changing the default path for Libero config. This will affect all the paths in the config file."
     )
     new_config = get_default_path_dict(custom_location)
+    os.makedirs(libero_config_path, exist_ok=True)
     with open(config_file, "w") as f:
         yaml.dump(new_config, f)
-
-
-if not os.path.exists(libero_config_path):
-    os.makedirs(libero_config_path)
-
-if not os.path.exists(config_file):
-    # Create a default config file
-
-    default_path_dict = get_default_path_dict()
-    answer = input(
-        "Do you want to specify a custom path for the dataset folder? (Y/N): "
-    ).lower()
-    if answer == "y":
-        # If the user wants to specify a custom storage path, prompt them to enter it
-        custom_dataset_path = input(
-            "Enter the path where you want to store the datasets: "
-        )
-        full_custom_dataset_path = os.path.join(
-            os.path.abspath(os.path.expanduser(custom_dataset_path)), "datasets"
-        )
-        # Check if the custom storage path exists, and create if it doesn't
-
-        print("The full path of the custom storage path you entered is:")
-        print(full_custom_dataset_path)
-        print("Do you want to continue? (Y/N)")
-        confirm_answer = input().lower()
-        if confirm_answer == "y":
-            if not os.path.exists(full_custom_dataset_path):
-                os.makedirs(full_custom_dataset_path)
-            default_path_dict["datasets"] = full_custom_dataset_path
-    print("Initializing the default config file...")
-    print(f"The following information is stored in the config file: {config_file}")
-    # write all the paths into a yaml file
-    with open(config_file, "w") as f:
-        yaml.dump(default_path_dict, f)
-    for key, value in default_path_dict.items():
-        print(f"{key}: {value}")
+    _config_cache = new_config
