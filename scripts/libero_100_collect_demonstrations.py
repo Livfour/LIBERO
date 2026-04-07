@@ -9,10 +9,8 @@ script.
 """
 
 import argparse
-import cv2
 import datetime
 import h5py
-import init_path
 import json
 import numpy as np
 import os
@@ -288,7 +286,11 @@ if __name__ == "__main__":
     language_instruction = problem_info["language_instruction"]
     text = colored(language_instruction, "red", attrs=["bold"])
     print("Goal of the following task: ", text)
-    instruction = colored("Hit any key to proceed to data collection ...", "green", attrs=["reverse", "blink"])
+    instruction = colored(
+        "Hit any key to proceed to data collection ...",
+        "green",
+        attrs=["reverse", "blink"],
+    )
     print(instruction)
     input()
 

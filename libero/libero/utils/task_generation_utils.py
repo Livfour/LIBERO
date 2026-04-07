@@ -12,7 +12,6 @@ TaskInfoTuple = namedtuple(
 
 
 def register_task_info(language, scene_name, objects_of_interest=[], goal_states=[]):
-
     if scene_name not in TASK_INFO:
         TASK_INFO[scene_name] = []
 

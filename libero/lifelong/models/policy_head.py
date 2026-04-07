@@ -7,7 +7,6 @@ import torch.nn.functional as F
 
 class DeterministicHead(nn.Module):
     def __init__(self, input_size, output_size, hidden_size=1024, num_layers=2):
-
         super().__init__()
         sizes = [input_size] + [hidden_size] * num_layers + [output_size]
         layers = []

@@ -1,12 +1,8 @@
-import math
 import numpy as np
 from torch import nn
 import torch
-import torchvision
-import torch.nn.functional as F
 
-from einops import rearrange, repeat
-from einops.layers.torch import Rearrange
+from einops import rearrange
 
 
 ###############################################################################
@@ -168,7 +164,7 @@ class TransformerDecoder(nn.Module):
         head_output_size,
         mlp_hidden_size,
         dropout,
-        **kwargs
+        **kwargs,
     ):
         super().__init__()
 
@@ -209,7 +205,6 @@ class TransformerDecoder(nn.Module):
             or (self.num_elements != input_shape[2])
             or (self.seq_len != input_shape[1])
         ):
-
             self.seq_len = input_shape[1]
             self.num_elements = input_shape[2]
             self.original_mask = (

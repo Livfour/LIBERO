@@ -1,4 +1,3 @@
-from libero.libero.envs.arenas.style import STYLE_MAPPING
 import numpy as np
 
 from robosuite.models.arenas import Arena

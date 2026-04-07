@@ -5,7 +5,6 @@ from libero.libero.envs.robots import *
 from libero.libero.envs.objects import *
 from libero.libero.envs.predicates import *
 from libero.libero.envs.regions import *
-from libero.libero.envs.utils import rectangle2xyrange
 
 
 @register_problem
@@ -65,7 +64,6 @@ class Libero_Living_Room_Tabletop_Manipulation(BDDLBaseDomain):
         object_sites_dict = {}
         region_dict = self.parsed_problem["regions"]
         for object_region_name in list(region_dict.keys()):
-
             if "living_room_table" in object_region_name:
                 ranges = region_dict[object_region_name]["ranges"][0]
                 assert ranges[2] >= ranges[0] and ranges[3] >= ranges[1]
@@ -95,7 +93,7 @@ class Libero_Living_Room_Tabletop_Manipulation(BDDLBaseDomain):
                 continue
             # Otherwise the processing is consistent
             for query_dict in [self.objects_dict, self.fixtures_dict]:
-                for (name, body) in query_dict.items():
+                for name, body in query_dict.items():
                     try:
                         if "worldbody" not in list(body.__dict__.keys()):
                             # This is a special case for CompositeObject, we skip this as this is very rare in our benchmark
@@ -171,7 +169,6 @@ class Libero_Living_Room_Tabletop_Manipulation(BDDLBaseDomain):
         self.set_visualization()
 
     def set_visualization(self):
-
         for object_name in self.visualization_sites_list:
             for _, (site_name, site_visible) in (
                 self.get_object(object_name).object_properties["vis_site_names"].items()

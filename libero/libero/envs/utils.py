@@ -5,7 +5,7 @@ import robosuite
 import xml.etree.ElementTree as ET
 
 from copy import copy
-from robosuite.utils.mjcf_utils import find_elements, xml_path_completion
+from robosuite.utils.mjcf_utils import find_elements
 from robosuite.utils.placement_samplers import ObjectPositionSampler
 
 
@@ -149,10 +149,10 @@ class MultiRegionRandomSampler(ObjectPositionSampler):
         if reference is None:
             base_offset = self.reference_pos
         elif type(reference) is str:
-            assert (
-                reference in placed_objects
-            ), "Invalid reference received. Current options are: {}, requested: {}".format(
-                placed_objects.keys(), reference
+            assert reference in placed_objects, (
+                "Invalid reference received. Current options are: {}, requested: {}".format(
+                    placed_objects.keys(), reference
+                )
             )
             ref_pos, _, ref_obj = placed_objects[reference]
             base_offset = np.array(ref_pos)
@@ -160,18 +160,18 @@ class MultiRegionRandomSampler(ObjectPositionSampler):
                 base_offset += np.array((0, 0, ref_obj.top_offset[-1]))
         else:
             base_offset = np.array(reference)
-            assert (
-                base_offset.shape[0] == 3
-            ), "Invalid reference received. Should be (x,y,z) 3-tuple, but got: {}".format(
-                base_offset
+            assert base_offset.shape[0] == 3, (
+                "Invalid reference received. Should be (x,y,z) 3-tuple, but got: {}".format(
+                    base_offset
+                )
             )
 
         # Sample pos and quat for all objects assigned to this sampler
         for obj in self.mujoco_objects:
             # First make sure the currently sampled object hasn't already been sampled
-            assert (
-                obj.name not in placed_objects
-            ), "Object '{}' has already been sampled!".format(obj.name)
+            assert obj.name not in placed_objects, (
+                "Object '{}' has already been sampled!".format(obj.name)
+            )
 
             horizontal_radius = obj.horizontal_radius
             bottom_offset = obj.bottom_offset

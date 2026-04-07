@@ -1,13 +1,11 @@
 """
 This script is to test if users can successfully load all the environments, the benchmark initial states in their machines
 """
+
 import os
 from termcolor import colored
-import cv2
-import h5py
 import subprocess
 import shutil
-import numpy as np
 
 from pathlib import Path
 
@@ -40,7 +38,6 @@ from libero.libero import benchmark, get_libero_path
 
 
 def main():
-
     benchmark_root_path = get_libero_path("benchmark_root")
     init_states_default_path = get_libero_path("init_states")
     datasets_default_path = get_libero_path("datasets")
@@ -74,9 +71,9 @@ def main():
             init_states_path = os.path.join(
                 init_states_default_path, task.problem_folder, task.init_states_file
             )
-            assert os.path.exists(
-                init_states_path
-            ), f"{init_states_path} does not exist!"
+            assert os.path.exists(init_states_path), (
+                f"{init_states_path} does not exist!"
+            )
             demo_file = os.path.join(
                 datasets_default_path,
                 benchmark_instance.get_task_demonstration(task_id),

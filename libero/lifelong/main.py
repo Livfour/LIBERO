@@ -6,7 +6,6 @@ import json
 import multiprocessing
 import pprint
 import time
-from pathlib import Path
 
 import hydra
 import numpy as np
@@ -14,7 +13,6 @@ import wandb
 import yaml
 import torch
 from easydict import EasyDict
-from hydra.utils import to_absolute_path
 from omegaconf import OmegaConf
 
 from libero.libero import get_libero_path
@@ -99,9 +97,9 @@ def main(hydra_cfg):
         n_demos = [data.n_demos for data in datasets]
         n_sequences = [data.total_num_sequences for data in datasets]
     else:  # group gsz manipulation tasks into a lifelong task, currently not used
-        assert (
-            n_manip_tasks % gsz == 0
-        ), f"[error] task_group_size does not divide n_tasks"
+        assert n_manip_tasks % gsz == 0, (
+            "[error] task_group_size does not divide n_tasks"
+        )
         datasets = []
         n_demos = []
         n_sequences = []
@@ -120,9 +118,9 @@ def main(hydra_cfg):
     print(f" Name: {benchmark.name}")
     print(f" # Tasks: {n_manip_tasks // gsz}")
     for i in range(n_tasks):
-        print(f"    - Task {i+1}:")
+        print(f"    - Task {i + 1}:")
         for j in range(gsz):
-            print(f"        {benchmark.get_task(i*gsz+j).language}")
+            print(f"        {benchmark.get_task(i * gsz + j).language}")
     print(" # demonstrations: " + " ".join(f"({x})" for x in n_demos))
     print(" # sequences: " + " ".join(f"({x})" for x in n_sequences))
     print("=======================================================================\n")
@@ -137,7 +135,9 @@ def main(hydra_cfg):
 
     result_summary = {
         "L_conf_mat": np.zeros((n_manip_tasks, n_manip_tasks)),  # loss confusion matrix
-        "S_conf_mat": np.zeros((n_manip_tasks, n_manip_tasks)),  # success confusion matrix
+        "S_conf_mat": np.zeros(
+            (n_manip_tasks, n_manip_tasks)
+        ),  # success confusion matrix
         "L_fwd": np.zeros((n_manip_tasks,)),  # loss AUC, how fast the agent learns
         "S_fwd": np.zeros((n_manip_tasks,)),  # success AUC, how fast the agent succeeds
     }
@@ -151,7 +151,7 @@ def main(hydra_cfg):
                 cfg.train.n_epochs + 1
             ):  # for testing task k at the e-th epoch when the agent learns on task k
                 if e % cfg.eval.eval_every == 0:
-                    result_summary[f"k{k}_e{e//cfg.eval.eval_every}"] = [
+                    result_summary[f"k{k}_e{e // cfg.eval.eval_every}"] = [
                         [] for _ in range(cfg.eval.n_eval)
                     ]
 
@@ -175,7 +175,6 @@ def main(hydra_cfg):
         json.dump(cfg, f, cls=NpEncoder, indent=4)
 
     if cfg.lifelong.algo == "Multitask":
-
         algo.train()
         s_fwd, l_fwd = algo.learn_all_tasks(datasets, benchmark, result_summary)
         result_summary["L_fwd"][-1] = l_fwd
@@ -209,7 +208,7 @@ def main(hydra_cfg):
             print(("[All task loss ] " + " %4.2f |" * n_tasks) % tuple(L))
             print(("[All task succ.] " + " %4.2f |" * n_tasks) % tuple(S))
 
-            torch.save(result_summary, os.path.join(cfg.experiment_dir, f"result.pt"))
+            torch.save(result_summary, os.path.join(cfg.experiment_dir, "result.pt"))
     else:
         for i in range(n_tasks):
             print(f"[info] start training on task {i}")
@@ -250,14 +249,14 @@ def main(hydra_cfg):
                     wandb.run.summary.update()
 
                 print(
-                    f"[info] train time (min) {(t1-t0)/60:.1f} "
-                    + f"eval loss time {(t2-t1)/60:.1f} "
-                    + f"eval success time {(t3-t2)/60:.1f}"
+                    f"[info] train time (min) {(t1 - t0) / 60:.1f} "
+                    + f"eval loss time {(t2 - t1) / 60:.1f} "
+                    + f"eval success time {(t3 - t2) / 60:.1f}"
                 )
                 print(("[Task %2d loss ] " + " %4.2f |" * (i + 1)) % (i, *L))
                 print(("[Task %2d succ.] " + " %4.2f |" * (i + 1)) % (i, *S))
                 torch.save(
-                    result_summary, os.path.join(cfg.experiment_dir, f"result.pt")
+                    result_summary, os.path.join(cfg.experiment_dir, "result.pt")
                 )
 
     print("[info] finished learning\n")
@@ -267,6 +266,6 @@ def main(hydra_cfg):
 
 if __name__ == "__main__":
     # Set the multiprocessing start method to 'spawn'
-    if multiprocessing.get_start_method(allow_none=True) != "spawn":  
+    if multiprocessing.get_start_method(allow_none=True) != "spawn":
         multiprocessing.set_start_method("spawn", force=True)
     main()

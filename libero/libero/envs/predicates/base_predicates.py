@@ -1,6 +1,3 @@
-from typing import List
-
-
 class Expression:
     def __init__(self):
         raise NotImplementedError

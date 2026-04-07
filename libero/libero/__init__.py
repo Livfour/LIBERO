@@ -58,16 +58,16 @@ def _load_config():
 def get_libero_path(query_key):
     config = _load_config()
 
-    assert (
-        query_key in config
-    ), f"Key {query_key} not found in config. Available keys are: {config.keys()}"
+    assert query_key in config, (
+        f"Key {query_key} not found in config. Available keys are: {config.keys()}"
+    )
     return config[query_key]
 
 
 def set_libero_default_path(custom_location=os.path.dirname(os.path.abspath(__file__))):
     global _config_cache
     print(
-        f"[Warning] You are changing the default path for Libero config. This will affect all the paths in the config file."
+        "[Warning] You are changing the default path for Libero config. This will affect all the paths in the config file."
     )
     new_config = get_default_path_dict(custom_location)
     os.makedirs(libero_config_path, exist_ok=True)

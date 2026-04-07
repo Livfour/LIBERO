@@ -41,7 +41,7 @@ def create_scene_xml_file(scene_name):
         ("Walls", "tex-wall"),
     ]
 
-    for (element_name, texture_name) in basic_elements:
+    for element_name, texture_name in basic_elements:
         element = root.findall('.//texture[@name="{}"]'.format(texture_name))[0]
         type = None
         if "floor" in element_name.lower():

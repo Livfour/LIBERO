@@ -4,18 +4,14 @@ from pathlib import Path
 import h5py
 import numpy as np
 import json
-import robosuite
 import robosuite.utils.transform_utils as T
 import robosuite.macros as macros
 
-import init_path
 import libero.libero.utils.utils as libero_utils
-import cv2
-from PIL import Image
-from robosuite.utils import camera_utils
 
 from libero.libero.envs import *
 from libero.libero import get_libero_path
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -65,9 +61,14 @@ def main():
     bddl_file_name = f["data"].attrs["bddl_file_name"]
 
     bddl_file_dir = os.path.dirname(bddl_file_name)
-    replace_bddl_prefix = "/".join(bddl_file_dir.split("bddl_files/")[:-1] + "bddl_files")
+    replace_bddl_prefix = "/".join(
+        bddl_file_dir.split("bddl_files/")[:-1] + "bddl_files"
+    )
 
-    hdf5_path = os.path.join(get_libero_path("datasets"), bddl_file_dir.split("bddl_files/")[-1].replace(".bddl", "_demo.hdf5"))
+    hdf5_path = os.path.join(
+        get_libero_path("datasets"),
+        bddl_file_dir.split("bddl_files/")[-1].replace(".bddl", "_demo.hdf5"),
+    )
 
     output_parent_dir = Path(hdf5_path).parent
     output_parent_dir.mkdir(parents=True, exist_ok=True)
@@ -122,7 +123,7 @@ def main():
 
     cap_index = 5
 
-    for (i, ep) in enumerate(demos):
+    for i, ep in enumerate(demos):
         print("Playing back random episode... (press ESC to quit)")
 
         # # select an episode randomly
@@ -173,7 +174,6 @@ def main():
         valid_index = []
 
         for j, action in enumerate(actions):
-
             obs, reward, done, info = env.step(action)
 
             if j < num_actions - 1:
@@ -212,7 +212,6 @@ def main():
             robot_states.append(env.get_robot_state_vector(obs))
 
             if args.use_camera_obs:
-
                 if args.use_depth:
                     agentview_depths.append(obs["agentview_depth"])
                     eye_in_hand_depths.append(obs["robot0_eye_in_hand_depth"])

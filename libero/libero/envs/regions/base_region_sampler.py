@@ -1,8 +1,5 @@
 import collections
 import numpy as np
-import os
-import robosuite
-import xml.etree.ElementTree as ET
 
 from copy import copy
 from robosuite.utils.errors import RandomizationError
@@ -149,10 +146,10 @@ class MultiRegionRandomSampler(ObjectPositionSampler):
         if reference is None:
             base_offset = self.reference_pos
         elif type(reference) is str:
-            assert (
-                reference in placed_objects
-            ), "Invalid reference received. Current options are: {}, requested: {}".format(
-                placed_objects.keys(), reference
+            assert reference in placed_objects, (
+                "Invalid reference received. Current options are: {}, requested: {}".format(
+                    placed_objects.keys(), reference
+                )
             )
             ref_pos, ref_quat, ref_obj = placed_objects[reference]
             base_offset = np.array(ref_pos)
@@ -160,18 +157,18 @@ class MultiRegionRandomSampler(ObjectPositionSampler):
                 base_offset += np.array((0, 0, ref_obj.top_offset[-1]))
         else:
             base_offset = np.array(reference)
-            assert (
-                base_offset.shape[0] == 3
-            ), "Invalid reference received. Should be (x,y,z) 3-tuple, but got: {}".format(
-                base_offset
+            assert base_offset.shape[0] == 3, (
+                "Invalid reference received. Should be (x,y,z) 3-tuple, but got: {}".format(
+                    base_offset
+                )
             )
 
         # Sample pos and quat for all objects assigned to this sampler
         for obj in self.mujoco_objects:
             # First make sure the currently sampled object hasn't already been sampled
-            assert (
-                obj.name not in placed_objects
-            ), "Object '{}' has already been sampled!".format(obj.name)
+            assert obj.name not in placed_objects, (
+                "Object '{}' has already been sampled!".format(obj.name)
+            )
 
             horizontal_radius = obj.horizontal_radius
             bottom_offset = obj.bottom_offset
@@ -386,10 +383,10 @@ class SiteRegionRandomSampler(ObjectPositionSampler):
         if reference is None:
             base_offset = self.reference_pos
         elif type(reference) is str:
-            assert (
-                reference in placed_objects
-            ), "Invalid reference received. Current options are: {}, requested: {}".format(
-                placed_objects.keys(), reference
+            assert reference in placed_objects, (
+                "Invalid reference received. Current options are: {}, requested: {}".format(
+                    placed_objects.keys(), reference
+                )
             )
             ref_pos, ref_quat, ref_obj = placed_objects[reference]
             base_offset = np.array(ref_pos)
@@ -397,18 +394,18 @@ class SiteRegionRandomSampler(ObjectPositionSampler):
                 base_offset += np.array((0, 0, ref_obj.top_offset[-1]))
         else:
             base_offset = np.array(reference)
-            assert (
-                base_offset.shape[0] == 3
-            ), "Invalid reference received. Should be (x,y,z) 3-tuple, but got: {}".format(
-                base_offset
+            assert base_offset.shape[0] == 3, (
+                "Invalid reference received. Should be (x,y,z) 3-tuple, but got: {}".format(
+                    base_offset
+                )
             )
 
         # Sample pos and quat for all objects assigned to this sampler
         for obj in self.mujoco_objects:
             # First make sure the currently sampled object hasn't already been sampled
-            assert (
-                obj.name not in placed_objects
-            ), "Object '{}' has already been sampled!".format(obj.name)
+            assert obj.name not in placed_objects, (
+                "Object '{}' has already been sampled!".format(obj.name)
+            )
 
             horizontal_radius = obj.horizontal_radius
             bottom_offset = obj.bottom_offset
@@ -493,7 +490,6 @@ class InSiteRegionRandomSampler(SiteRegionRandomSampler):
         reference_pos=(0, 0, 0),
         z_offset=0.0,
     ):
-
         super().__init__(
             name=name,
             mujoco_objects=mujoco_objects,
@@ -593,10 +589,10 @@ class InSiteRegionRandomSampler(SiteRegionRandomSampler):
         if reference is None:
             base_offset = self.reference_pos
         elif type(reference) is str:
-            assert (
-                reference in placed_objects
-            ), "Invalid reference received. Current options are: {}, requested: {}".format(
-                placed_objects.keys(), reference
+            assert reference in placed_objects, (
+                "Invalid reference received. Current options are: {}, requested: {}".format(
+                    placed_objects.keys(), reference
+                )
             )
             ref_pos, ref_quat, ref_obj = placed_objects[reference]
             base_offset = np.array(ref_pos)
@@ -604,18 +600,18 @@ class InSiteRegionRandomSampler(SiteRegionRandomSampler):
             #     base_offset += np.array((0, 0, ref_obj.top_offset[-1]))
         else:
             base_offset = np.array(reference)
-            assert (
-                base_offset.shape[0] == 3
-            ), "Invalid reference received. Should be (x,y,z) 3-tuple, but got: {}".format(
-                base_offset
+            assert base_offset.shape[0] == 3, (
+                "Invalid reference received. Should be (x,y,z) 3-tuple, but got: {}".format(
+                    base_offset
+                )
             )
 
         # Sample pos and quat for all objects assigned to this sampler
         for obj in self.mujoco_objects:
             # First make sure the currently sampled object hasn't already been sampled
-            assert (
-                obj.name not in placed_objects
-            ), "Object '{}' has already been sampled!".format(obj.name)
+            assert obj.name not in placed_objects, (
+                "Object '{}' has already been sampled!".format(obj.name)
+            )
 
             horizontal_radius = obj.horizontal_radius
             bottom_offset = obj.bottom_offset
@@ -695,9 +691,9 @@ class SiteSequentialCompositeSampler(ObjectPositionSampler):
         """
         # Verify that all added mujoco objects haven't already been added, and add to this sampler's objects dict
         for obj in sampler.mujoco_objects:
-            assert (
-                obj not in self.mujoco_objects
-            ), f"Object '{obj.name}' already has sampler associated with it!"
+            assert obj not in self.mujoco_objects, (
+                f"Object '{obj.name}' already has sampler associated with it!"
+            )
             self.mujoco_objects.append(obj)
         self.samplers[sampler.name] = sampler
         self.sample_args[sampler.name] = sample_args
@@ -743,9 +739,9 @@ class SiteSequentialCompositeSampler(ObjectPositionSampler):
             else mujoco_objects
         )
         for obj in mujoco_objects:
-            assert (
-                obj not in self.mujoco_objects
-            ), f"Object '{obj.name}' already has sampler associated with it!"
+            assert obj not in self.mujoco_objects, (
+                f"Object '{obj.name}' already has sampler associated with it!"
+            )
             self.mujoco_objects.append(obj)
         # Make sure sampler_name exists
         assert sampler_name in self.samplers.keys(), (

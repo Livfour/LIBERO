@@ -2,13 +2,10 @@ import numpy as np
 import os
 import robosuite.utils.transform_utils as T
 
-from copy import deepcopy
 from robosuite.environments.manipulation.single_arm_env import SingleArmEnv
 from robosuite.models.tasks import ManipulationTask
 from robosuite.utils.placement_samplers import SequentialCompositeSampler
 from robosuite.utils.observables import Observable, sensor
-from robosuite.utils.mjcf_utils import CustomMaterial
-import robosuite.macros as macros
 
 import mujoco
 
@@ -190,9 +187,9 @@ class BDDLBaseDomain(SingleArmEnv):
 
     def _assert_problem_name(self):
         """Implement this to make sure the loaded bddl file has the correct problem name specification."""
-        assert (
-            self.parsed_problem["problem_name"] == self.__class__.__name__.lower()
-        ), "Problem name mismatched"
+        assert self.parsed_problem["problem_name"] == self.__class__.__name__.lower(), (
+            "Problem name mismatched"
+        )
 
     def _load_fixtures_in_arena(self, mujoco_arena):
         """
@@ -414,12 +411,12 @@ class BDDLBaseDomain(SingleArmEnv):
         # Additional object references from this env
         self.obj_body_id = dict()
 
-        for (object_name, object_body) in self.objects_dict.items():
+        for object_name, object_body in self.objects_dict.items():
             self.obj_body_id[object_name] = self.sim.model.body_name2id(
                 object_body.root_body
             )
 
-        for (fixture_name, fixture_body) in self.fixtures_dict.items():
+        for fixture_name, fixture_body in self.fixtures_dict.items():
             self.obj_body_id[fixture_name] = self.sim.model.body_name2id(
                 fixture_body.root_body
             )
@@ -467,7 +464,7 @@ class BDDLBaseDomain(SingleArmEnv):
         sensors.append(world_pose_in_gripper)
         names.append("world_pose_in_gripper")
 
-        for (i, obj) in enumerate(self.objects):
+        for i, obj in enumerate(self.objects):
             obj_sensors, obj_sensor_names = self._create_obj_sensors(
                 obj_name=obj.name, modality="object"
             )
@@ -560,7 +557,6 @@ class BDDLBaseDomain(SingleArmEnv):
         return sensors, names
 
     def _add_placement_initializer(self):
-
         mapping_inv = {}
         for k, values in self.parsed_problem["fixtures"].items():
             for v in values:
@@ -736,7 +732,6 @@ class BDDLBaseDomain(SingleArmEnv):
 
         # Reset all object positions using initializer sampler if we're not directly loading from an xml
         if not self.deterministic_reset:
-
             # Sample from the placement initializer for all objects
             for object_property_initializer in self.object_property_initializers:
                 if isinstance(object_property_initializer, OpenCloseSampler):

@@ -2,8 +2,6 @@ import os
 
 import numpy as np
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
 from torch.utils.data import ConcatDataset, DataLoader, RandomSampler
 
 from libero.lifelong.algos.base import Sequential
@@ -25,9 +23,7 @@ class Multitask(Sequential):
         concat_dataset = ConcatDataset(datasets)
 
         # learn on all tasks, only used in multitask learning
-        model_checkpoint_name = os.path.join(
-            self.experiment_dir, f"multitask_model.pth"
-        )
+        model_checkpoint_name = os.path.join(self.experiment_dir, "multitask_model.pth")
         all_tasks = list(range(benchmark.n_tasks))
 
         train_dataloader = DataLoader(
@@ -50,25 +46,24 @@ class Multitask(Sequential):
 
         # start training
         for epoch in range(0, self.cfg.train.n_epochs + 1):
-
             t0 = time.time()
             if epoch > 0 or (self.cfg.pretrain):  # update
                 self.policy.train()
                 training_loss = 0.0
-                for (idx, data) in enumerate(train_dataloader):
+                for idx, data in enumerate(train_dataloader):
                     loss = self.observe(data)
                     training_loss += loss
                 training_loss /= len(train_dataloader)
             else:  # just evaluate the zero-shot performance on 0-th epoch
                 training_loss = 0.0
-                for (idx, data) in enumerate(train_dataloader):
+                for idx, data in enumerate(train_dataloader):
                     loss = self.eval_observe(data)
                     training_loss += loss
                 training_loss /= len(train_dataloader)
             t1 = time.time()
 
             print(
-                f"[info] Epoch: {epoch:3d} | train loss: {training_loss:5.2f} | time: {(t1-t0)/60:4.2f}"
+                f"[info] Epoch: {epoch:3d} | train loss: {training_loss:5.2f} | time: {(t1 - t0) / 60:4.2f}"
             )
 
             if epoch % self.cfg.eval.eval_every == 0:  # evaluate BC loss
@@ -109,7 +104,7 @@ class Multitask(Sequential):
                 if self.cfg.lifelong.eval_in_train:
                     print(
                         f"[info] Epoch: {epoch:3d} | succ: {success_rate:4.2f} ± {ci:4.2f} | best succ: {prev_success_rate} "
-                        + f"| succ. AoC {tmp_successes.sum()/cumulated_counter:4.2f} | time: {(t1-t0)/60:4.2f}",
+                        + f"| succ. AoC {tmp_successes.sum() / cumulated_counter:4.2f} | time: {(t1 - t0) / 60:4.2f}",
                         flush=True,
                     )
 
@@ -124,9 +119,7 @@ class Multitask(Sequential):
         # return the metrics regarding forward transfer
         losses = np.array(losses)
         successes = np.array(successes)
-        auc_checkpoint_name = os.path.join(
-            self.experiment_dir, f"multitask_auc.log"
-        )
+        auc_checkpoint_name = os.path.join(self.experiment_dir, "multitask_auc.log")
         torch.save(
             {
                 "success": successes,

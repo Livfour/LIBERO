@@ -1,6 +1,5 @@
 from bddl.parsing import *
 
-import itertools
 import numpy as np
 
 pi = np.pi
@@ -26,18 +25,18 @@ def get_regions(t, regions, group):
                 target_name = attribute[1]
             elif attribute[0] == ":ranges":
                 for rect_range in attribute[1]:
-                    assert (
-                        len(rect_range) == 4
-                    ), f"Dimension of rectangular range mismatched!!, supposed to be 4, only found {len(rect_range)}"
+                    assert len(rect_range) == 4, (
+                        f"Dimension of rectangular range mismatched!!, supposed to be 4, only found {len(rect_range)}"
+                    )
                     region_dict["ranges"].append([float(x) for x in rect_range])
             elif attribute[0] == ":yaw_rotation":
                 # print(attribute[1])
                 for value in attribute[1]:
                     region_dict["yaw_rotation"] = [eval(x) for x in value]
             elif attribute[0] == ":rgba":
-                assert (
-                    len(attribute[1]) == 4
-                ), f"Missing specification for rgba color, supposed to be 4 dimension, but only got  {attribute[1]}"
+                assert len(attribute[1]) == 4, (
+                    f"Missing specification for rgba color, supposed to be 4 dimension, but only got  {attribute[1]}"
+                )
                 region_dict["rgba"] = [float(x) for x in attribute[1]]
             else:
                 raise NotImplementedError
@@ -119,7 +118,7 @@ def robosuite_parse_problem(problem_filename):
                     else:
                         object_list.append(group.pop(0))
                 if object_list:
-                    if not "object" in objects:
+                    if "object" not in objects:
                         objects["object"] = []
                     objects["object"] += object_list
             elif t == ":obj_of_interest":
@@ -137,7 +136,7 @@ def robosuite_parse_problem(problem_filename):
                     else:
                         fixture_list.append(group.pop(0))
                 if fixture_list:
-                    if not "fixture" in fixtures:
+                    if "fixture" not in fixtures:
                         fixtures["fixture"] = []
                     fixtures["fixture"] += fixture_list
             elif t == ":regions":

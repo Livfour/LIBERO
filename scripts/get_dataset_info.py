@@ -22,6 +22,7 @@ Example usage:
     # run script only on validation data
     python get_dataset_info.py --dataset ../../tests/assets/test.hdf5 --filter_key valid
 """
+
 import h5py
 import json
 import argparse

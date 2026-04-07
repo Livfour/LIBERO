@@ -2,7 +2,6 @@ import os
 import re
 import numpy as np
 from robosuite.models.objects import MujocoXMLObject
-from robosuite.utils.mjcf_utils import array_to_string
 
 import pathlib
 

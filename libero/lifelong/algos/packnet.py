@@ -1,8 +1,5 @@
-import numpy as np
-import robomimic.utils.tensor_utils as TensorUtils
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.utils.data import DataLoader
 
 from libero.libero.benchmark import *
@@ -194,14 +191,14 @@ class PackNet(Sequential):
                 t0 = time.time()
                 self.policy.train()
                 training_loss = 0.0
-                for (idx, data) in enumerate(train_dataloader):
+                for idx, data in enumerate(train_dataloader):
                     loss = self.observe(data)
                     training_loss += loss
                 training_loss /= len(train_dataloader)
                 t1 = time.time()
 
                 print(
-                    f"[info] Post epoch: {epoch:3d} | train loss: {training_loss:5.2f} | time: {(t1-t0)/60:4.2f}"
+                    f"[info] Post epoch: {epoch:3d} | train loss: {training_loss:5.2f} | time: {(t1 - t0) / 60:4.2f}"
                 )
                 time.sleep(0.1)
 
@@ -211,7 +208,9 @@ class PackNet(Sequential):
                     t0 = time.time()
                     task = benchmark.get_task(task_id)
                     task_emb = benchmark.get_task_emb(task_id)
-                    task_str = f"k{task_id}_e{epoch//self.cfg.lifelong.post_eval_every}"
+                    task_str = (
+                        f"k{task_id}_e{epoch // self.cfg.lifelong.post_eval_every}"
+                    )
 
                     success_rate = evaluate_one_task_success(
                         self.cfg,
@@ -239,7 +238,7 @@ class PackNet(Sequential):
                     print(
                         f"[info] Epoch: {epoch:3d} | succ: {success_rate:4.2f} ± {ci:4.2f}"
                         + f"best succ: {prev_success_rate} "
-                        + f"| time: {(t1-t0)/60:4.2f}"
+                        + f"| time: {(t1 - t0) / 60:4.2f}"
                     )
 
                 if self.scheduler is not None:

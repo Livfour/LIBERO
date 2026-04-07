@@ -1,9 +1,6 @@
-import copy
-
 import numpy as np
 import robomimic.utils.file_utils as FileUtils
 import robomimic.utils.obs_utils as ObsUtils
-from PIL import Image
 from robomimic.utils.dataset import SequenceDataset
 from torch.utils.data import Dataset
 
@@ -25,9 +22,8 @@ def get_dataset(
     filter_key=None,
     hdf5_cache_mode="low_dim",
     *args,
-    **kwargs
+    **kwargs,
 ):
-
     if initialize_obs_utils:
         ObsUtils.initialize_obs_utils_with_obs_specs({"obs": obs_modality})
 

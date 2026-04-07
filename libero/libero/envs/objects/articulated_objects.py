@@ -2,9 +2,7 @@ import os
 import re
 import numpy as np
 
-from dataclasses import dataclass
 from robosuite.models.objects import MujocoXMLObject
-from easydict import EasyDict
 
 import pathlib
 

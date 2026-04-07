@@ -3,6 +3,7 @@ This file contains all neural modules related to encoding the spatial
 information of obs_t, i.e., the abstracted knowledge of the current visual
 input conditioned on the language.
 """
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -111,9 +112,9 @@ class SpatialProjection(nn.Module):
     def __init__(self, input_shape, out_dim):
         super().__init__()
 
-        assert (
-            len(input_shape) == 3
-        ), "[error] spatial projection: input shape is not a 3-tuple"
+        assert len(input_shape) == 3, (
+            "[error] spatial projection: input shape is not a 3-tuple"
+        )
         in_c, in_h, in_w = input_shape
         num_kp = out_dim // 2
         self.out_dim = out_dim
@@ -159,7 +160,6 @@ class ResnetEncoder(nn.Module):
         language_dim=768,
         language_fusion="film",
     ):
-
         super().__init__()
 
         ### 1. encode input (images) using convolutional layers
@@ -169,9 +169,9 @@ class ResnetEncoder(nn.Module):
         ]
         self.remove_layer_num = remove_layer_num
 
-        assert (
-            len(input_shape) == 3
-        ), "[error] input shape of resnet should be (C, H, W)"
+        assert len(input_shape) == 3, (
+            "[error] input shape of resnet should be (C, H, W)"
+        )
 
         in_channels = input_shape[0]
         if in_channels != 3:  # has eye_in_hand, increase channel size

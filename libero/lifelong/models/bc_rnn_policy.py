@@ -1,8 +1,6 @@
-import robomimic.utils.tensor_utils as TensorUtils
 import torch
 import torch.nn as nn
 
-from einops import rearrange, repeat
 from libero.lifelong.models.modules.rgb_modules import *
 from libero.lifelong.models.modules.language_modules import *
 from libero.lifelong.models.base_policy import BasePolicy
@@ -25,7 +23,6 @@ class ExtraModalities:
         extra_hidden_size=64,
         extra_embedding_size=32,
     ):
-
         self.use_joint = use_joint
         self.use_gripper = use_gripper
         self.use_ee = use_ee
@@ -136,7 +133,7 @@ class BCRNNPolicy(BasePolicy):
 
         self.policy_head = eval(policy_cfg.policy_head.network)(
             **policy_cfg.policy_head.loss_kwargs,
-            **policy_cfg.policy_head.network_kwargs
+            **policy_cfg.policy_head.network_kwargs,
         )
         self.eval_h0 = None
         self.eval_c0 = None

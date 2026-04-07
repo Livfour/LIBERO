@@ -2,7 +2,7 @@ import robomimic.utils.tensor_utils as TensorUtils
 import torch
 import torch.nn as nn
 
-from einops import rearrange, repeat
+from einops import rearrange
 from libero.lifelong.models.modules.rgb_modules import *
 from libero.lifelong.models.modules.language_modules import *
 from libero.lifelong.models.modules.transformer_modules import *
@@ -134,7 +134,7 @@ class BCViLTPolicy(BasePolicy):
 
         self.policy_head = eval(policy_cfg.policy_head.network)(
             **policy_cfg.policy_head.loss_kwargs,
-            **policy_cfg.policy_head.network_kwargs
+            **policy_cfg.policy_head.network_kwargs,
         )
 
         self.latent_queue = []

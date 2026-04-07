@@ -1,4 +1,3 @@
-import init_path
 import argparse
 import os
 import time
@@ -23,13 +22,12 @@ def parse_args():
     parser.add_argument(
         "--use-huggingface",
         action="store_true",
-        help="Use Hugging Face instead of original download links"
+        help="Use Hugging Face instead of original download links",
     )
     return parser.parse_args()
 
 
 def main():
-
     args = parse_args()
 
     # Ask users to specify the download directory of datasets
@@ -41,18 +39,19 @@ def main():
         print("Using Hugging Face as the download source")
     else:
         print("Using original download links (note: these may expire soon)")
-        input_str = input("Download from original links may lead to failures. Do you want to continue? (y/n): ")
-        if input_str.lower() != 'y':
+        input_str = input(
+            "Download from original links may lead to failures. Do you want to continue? (y/n): "
+        )
+        if input_str.lower() != "y":
             print("Switching to Hugging Face as the download source...")
             args.use_huggingface = True
 
     # If not, download
     download_utils.libero_dataset_download(
-        download_dir=args.download_dir, 
+        download_dir=args.download_dir,
         datasets=args.datasets,
-        use_huggingface=args.use_huggingface
+        use_huggingface=args.use_huggingface,
     )
-
 
     # wait for 1 second
     time.sleep(1)

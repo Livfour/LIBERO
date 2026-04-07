@@ -3,14 +3,12 @@ import numpy as np
 import re
 
 from robosuite.models.objects import MujocoXMLObject
-from robosuite.utils.mjcf_utils import xml_path_completion
 
 import pathlib
 
 absolute_path = pathlib.Path(__file__).parent.parent.parent.absolute()
 
 from libero.libero.envs.base_object import (
-    register_visual_change_object,
     register_object,
 )
 

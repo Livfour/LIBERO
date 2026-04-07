@@ -1,7 +1,6 @@
 # This is a util file for various functions that retrieve object information
-from xml.etree import ElementTree
 
-from libero.libero.envs.objects import OBJECTS_DICT, get_object_fn
+from libero.libero.envs.objects import get_object_fn
 
 EXCEPTION_DICT = {"flat_stove": "flat_stove_burner"}
 

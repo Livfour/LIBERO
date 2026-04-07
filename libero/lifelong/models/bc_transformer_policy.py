@@ -67,12 +67,11 @@ class ExtraModalityTokens(nn.Module):
             self.proprio_mlp = nn.Sequential(*layers)
             self.extra_encoders[modality_name] = {"encoder": self.proprio_mlp}
 
-        for (proprio_dim, use_modality, modality_name) in [
+        for proprio_dim, use_modality, modality_name in [
             (joint_states_dim, self.use_joint, "joint_states"),
             (gripper_states_dim, self.use_gripper, "gripper_states"),
             (ee_dim, self.use_ee, "ee_states"),
         ]:
-
             if use_modality:
                 generate_proprio_mlp_fn(modality_name, proprio_dim)
 
@@ -91,12 +90,11 @@ class ExtraModalityTokens(nn.Module):
         """
         tensor_list = []
 
-        for (use_modality, modality_name) in [
+        for use_modality, modality_name in [
             (self.use_joint, "joint_states"),
             (self.use_gripper, "gripper_states"),
             (self.use_ee, "ee_states"),
         ]:
-
             if use_modality:
                 tensor_list.append(
                     self.extra_encoders[modality_name]["encoder"](
@@ -115,7 +113,6 @@ class PerturbationAttention:
     """
 
     def __init__(self, model, image_size=[128, 128], patch_size=[16, 16], device="cpu"):
-
         self.model = model
         self.patch_size = patch_size
         H, W = image_size
@@ -236,7 +233,7 @@ class BCTransformerPolicy(BasePolicy):
 
         self.policy_head = eval(policy_cfg.policy_head.network)(
             **policy_cfg.policy_head.loss_kwargs,
-            **policy_cfg.policy_head.network_kwargs
+            **policy_cfg.policy_head.network_kwargs,
         )
 
         self.latent_queue = []

@@ -3,11 +3,6 @@ import torch
 import torch.nn as nn
 
 from libero.lifelong.models.modules.data_augmentation import (
-    IdentityAug,
-    TranslationAug,
-    ImgColorJitterAug,
-    ImgColorJitterGroupAug,
-    BatchWiseImgColorJitterAug,
     DataAugGroup,
 )
 
@@ -107,7 +102,8 @@ class BasePolicy(nn.Module, metaclass=PolicyMeta):
             return data
         else:
             data = TensorUtils.recursive_dict_list_tuple_apply(
-                data, {torch.Tensor: lambda x: x.unsqueeze(dim=1)}  # add time dimension
+                data,
+                {torch.Tensor: lambda x: x.unsqueeze(dim=1)},  # add time dimension
             )
             data["task_emb"] = data["task_emb"].squeeze(1)
         return data

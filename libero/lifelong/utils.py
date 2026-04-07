@@ -7,7 +7,6 @@ from pathlib import Path
 import numpy as np
 import robomimic.utils.tensor_utils as TensorUtils
 import torch
-import torch.nn as nn
 from hydra.utils import to_absolute_path
 from thop import profile
 from torch.utils.data import DataLoader
@@ -68,7 +67,6 @@ def torch_load_model(model_path, map_location=None):
 def get_train_test_loader(
     dataset, train_ratio, train_batch_size, test_batch_size, num_workers=(0, 0)
 ):
-
     train_size = int(len(dataset) * train_ratio)
     test_size = len(dataset) - train_size
     train_dataset, test_dataset = torch.utils.data.random_split(
@@ -113,13 +111,13 @@ def create_experiment_dir(cfg):
     if cfg.data.task_order_index > 0:
         prefix += f"_permute{cfg.data.task_order_index}"
     if cfg.task_embedding_format == "one-hot":
-        prefix += f"_onehot"
+        prefix += "_onehot"
     if cfg.task_embedding_format == "clip":
-        prefix += f"_clip"
+        prefix += "_clip"
     if cfg.task_embedding_format == "gpt2":
-        prefix += f"_gpt2"
+        prefix += "_gpt2"
     if cfg.task_embedding_format == "roberta":
-        prefix += f"_roberta"
+        prefix += "_roberta"
 
     experiment_dir = (
         f"./{prefix}/{cfg.benchmark_name}/{cfg.lifelong.algo}/"
@@ -156,7 +154,7 @@ def get_task_embs(cfg, descriptions):
         # offset defaults to 1, if we have pretrained another model, this offset
         # starts from the pretrained number of tasks + 1
         offset = cfg.task_embedding_one_hot_offset
-        descriptions = [f"Task {i+offset}" for i in range(len(descriptions))]
+        descriptions = [f"Task {i + offset}" for i in range(len(descriptions))]
 
     if cfg.task_embedding_format == "bert" or cfg.task_embedding_format == "one-hot":
         tz = AutoTokenizer.from_pretrained(

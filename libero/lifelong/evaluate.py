@@ -4,19 +4,8 @@ import os
 
 # TODO: find a better way for this?
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-import hydra
-import json
 import numpy as np
-import pprint
-import time
 import torch
-import wandb
-import yaml
-from easydict import EasyDict
-from hydra.utils import get_original_cwd, to_absolute_path
-from omegaconf import DictConfig, OmegaConf
-from torch.utils.data import DataLoader
-from transformers import AutoModel, pipeline, AutoTokenizer, logging
 from pathlib import Path
 
 from libero.libero import get_libero_path
@@ -25,26 +14,16 @@ from libero.libero.envs import OffScreenRenderEnv, SubprocVectorEnv
 from libero.libero.utils.time_utils import Timer
 from libero.libero.utils.video_utils import VideoWriter
 from libero.lifelong.algos import *
-from libero.lifelong.datasets import get_dataset, SequenceVLDataset, GroupedTaskDataset
+from libero.lifelong.datasets import get_dataset, GroupedTaskDataset
 from libero.lifelong.metric import (
-    evaluate_loss,
-    evaluate_success,
     raw_obs_to_tensor_obs,
 )
 from libero.lifelong.utils import (
-    control_seed,
     safe_device,
     torch_load_model,
-    NpEncoder,
-    compute_flops,
 )
 
 from libero.lifelong.main import get_task_embs
-
-import robomimic.utils.obs_utils as ObsUtils
-import robomimic.utils.tensor_utils as TensorUtils
-
-import time
 
 
 benchmark_map = {
@@ -104,13 +83,13 @@ def parse_args():
     args.save_dir = f"{args.experiment_dir}_saved"
 
     if args.algo == "multitask":
-        assert args.ep in list(
-            range(0, 50, 5)
-        ), "[error] ep should be in [0, 5, ..., 50]"
+        assert args.ep in list(range(0, 50, 5)), (
+            "[error] ep should be in [0, 5, ..., 50]"
+        )
     else:
-        assert args.load_task in list(
-            range(10)
-        ), "[error] load_task should be in [0, ..., 9]"
+        assert args.load_task in list(range(10)), (
+            "[error] load_task should be in [0, ..., 9]"
+        )
     return args
 
 
@@ -167,7 +146,9 @@ def main():
     if cfg.lifelong.algo == "PackNet":
         algo.eval()
         for module_idx, module in enumerate(algo.policy.modules()):
-            if isinstance(module, torch.nn.Conv2d) or isinstance(module, torch.nn.Linear):
+            if isinstance(module, torch.nn.Conv2d) or isinstance(
+                module, torch.nn.Linear
+            ):
                 weight = module.weight.data
                 mask = algo.previous_masks[module_idx].to(cfg.device)
                 weight[mask.eq(0)] = 0.0

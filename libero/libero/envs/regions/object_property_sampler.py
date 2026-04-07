@@ -1,8 +1,4 @@
-import collections
 import numpy as np
-import os
-import robosuite
-import xml.etree.ElementTree as ET
 
 from copy import copy
 
@@ -52,9 +48,9 @@ class ObjectPropertySampler:
             else mujoco_objects
         )
         for obj in mujoco_objects:
-            assert (
-                obj not in self.mujoco_objects
-            ), "Object '{}' already in sampler!".format(obj.name)
+            assert obj not in self.mujoco_objects, (
+                "Object '{}' already in sampler!".format(obj.name)
+            )
             self.mujoco_objects.append(obj)
 
     def reset(self):
